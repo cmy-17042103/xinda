@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index</title>
+</head>
+<body>
+	欢迎进入登录页面！你,值得拥有！
+	<button onclick="linkto()">跳转用户信息页面</button>
+	<button onclick="linkto02()">Edit(T)</button>
+	
+	<script type="text/javascript">
+		function linkto() {
+			window.location.href = "/sysuser/sysuserlist?userid=1";
+		}
+		
+		function linkto02() {
+			window.location.href = "edit.html";
+		}
+	</script>
+	<br/>
+	<br/>
+	<form action="/sysuser/insert">  <!--action 路径，决定要走哪个函数  -->
+		编号： <input type="text" name="id"><br /> 
+		用户名： <input type="text" name="username"><br /> 
+		密码： <input type="text" name="password"><br /> 
+		<input type="submit" value="Regist">
+	</form>
+	<br />
+	<br />
+	<br />
+	<br/>
+	<br/>
+	<form action="/sysuser/login">
+		用户名： <input type="text" name="username"><br /> 
+		密码： <input type="text" name="password"><br /> 
+		<input type="submit" value="Login">
+	</form>
+	<br />
+	<br />
+	<form action="/sysuser/query">
+		编号： <input type="text" name="id"><br />
+		 <input type="submit" value="Query">
+	</form>
+</body>
+</html>

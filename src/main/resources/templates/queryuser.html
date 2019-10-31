@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>insertShow</title>
+</head>
+<body>
+ user! queryuser.html
+	
+		<table border="2" cellpadding="8" cellspacing="0">
+		   <tr >
+		   		<td>编号</td>
+		   		<td>用户名</td>
+		   		<td>密码</td>
+		   		<td>时间</td>
+		   </tr>
+		     <tr th:each="user:${queryUser}">
+		   		<td th:text="${user.id}">编号</td>
+		   		<td th:text="${user.username}">用户名</td>
+		   		<td th:text="${user.password}">密码</td>
+		   		<td th:text="${user.ts}">时间</td>
+		   </tr>
+		</table>
+		
+		
+		<form  action="/sysuser/delete">
+			编号： <input type="text" name="id"><br />		
+		<input type="submit" value="Delete">
+		</form>
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+		<form action="/sysuser/edit">
+		编号： <input type="text" name="id"><br /> 
+		用户名： <input type="text" name="username"><br /> 
+		密码： <input type="text" name="password"><br /> 
+		<input type="submit" value="Edit">
+	 </form>
+	
+</body>
+</html>

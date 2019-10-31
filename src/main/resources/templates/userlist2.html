@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>展示用户信息</title>
+
+<style>
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    width:50%;
+}
+ul.pagination li {
+	display: inline;
+}
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+}
+ul.pagination li a.active {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;		/*solid	定义实线*/
+}
+ul.pagination li a:hover:not(.active) {
+	background-color: #ddd;
+}
+div.nowpage {
+	background-color:#aaaaaa;
+}
+div.center {
+	text-align: center;
+}
+</style>
+<script src="../js/jquery-3.4.1.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+	var pcount=$('#count').val();
+	var psize=$('#pageSize').val();
+	var pstart=$('#pageStart').val();
+	var username=$('#username2').val();  //id作用体现
+	var nowpage=Math.floor(pstart/psize)+1;
+	//alert(nowpage);
+	var cpage=Math.ceil(pcount/psize);
+	var strhtml="";
+	
+	if(cpage<=10){
+		for(var i=1;i<=cpage;i++){
+			if(i==nowpage){
+				strhtml+='<a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+' style="background-color:#aaaaaa">'+i+'</a>';
+			}else{
+				strhtml+='<span> <a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+'>'+i+'</a></span>';
+			}
+		}
+	}else if(cpage>10 && 1<=nowpage && nowpage<=6){		//pagestart=20 nowpage=11 cpage=15
+		//alert("111111===" + nowpage);  ====显示1-10，不变
+		for(var i=1;i<=10;i++){
+			if(i==nowpage){
+				strhtml+='<a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+' style="background-color:#aaaaaa;font-weight:700">'+i+'</a>';
+				//strhtml+='<a href=/sysuser/page?pageStart='+psize*(i-1)+' style="background-color:#aaaaaa"><div class="nowpage">'+i+'</div></a>';
+			}else{
+				strhtml+='<span> <a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+'>'+i+'</a></span>';
+			}
+		}
+	}else if(cpage>10 && nowpage<=cpage-4){
+		//alert("222222===" + nowpage); ===== 往 10 后滚动
+		for(var i=nowpage-5;i<=nowpage+4;i++){//6--15
+			if(i==nowpage){
+				strhtml+='<a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+' style="background-color:#aaaaaa;font-weight:700">'+i+'</a>';
+			}else{
+				strhtml+='<span><a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+'>'+i+'</a></span>';
+			}
+		}
+	}else if(cpage>10 && cpage-4<nowpage && nowpage<=cpage){
+		//alert("333333===" + nowpage);  ====临近结尾不滚动，显示 页数
+		for(var i=cpage-9;i<=cpage;i++){
+			if(i==nowpage){
+				strhtml+='<a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+' style="background-color:#aaaaaa;font-weight:700">'+i+'</a>';
+			}else{
+				strhtml+='<span> <a href=/sysuser/page?pageStart='+psize*(i-1)+'&username='+username+'>'+i+'</a></span>';
+			}
+		}
+	}else{
+		console.error(00000000);
+	}
+	$("#mydiv").html(strhtml);
+	
+});
+</script>
+
+</head>
+<body>
+<form action="/sysuser/page">
+username: <input type="text" name="username" th:value="${username1}" id="username2"/>
+   			  <input type="submit" value="find" />
+</form>
+   
+	<input type="hidden" th:value="${count}" id="count"/>
+	<input type="hidden" th:value="${pageSize}" id="pageSize"/>
+	<input type="hidden" th:value="${pageStart}" id="pageStart"/>
+	<table align="center" border="1" cellspacing="0" >
+		<caption>展示用户信息</caption>
+		<thead>
+			<tr>
+				<td width="150">编号</td>
+				<td width="150">用户名</td>
+				<td width="150">密码</td>
+				<td width="300">时间</td>
+			</tr>
+		</thead>
+		 <tr th:each="user:${Userlist}"><!--th:each  循环迭代    user：临时变量，UserList：控制层map集合的key-->
+		   		<td th:text="${user.id}">编号</td>   <!-- th:text  作用：文本替换 -->
+		   		<td th:text="${user.username}">用户名</td>
+		   		<td th:text="${user.password}">密码</td>
+		   		<td th:text="${user.ts}">时间</td>
+		   </tr>
+	</table>
+	<div class="center" th:with="pageNext=${pageStart}+${pageSize},
+				pagePre=${pageStart}-${pageSize},
+				modPage=${count}%${pageSize},
+				PageLast=${count}-${modPage},
+				lastPage=${count}-${pageSize}">
+
+		<ul class="pagination"><!-- th:each -->
+			<li><a th:href="@{'/sysuser/page?pageStart=' + 0+'&username='+${username1}}">首页</a></li>
+			<li><span th:if="${pagePre} ge '0'"><a th:href="@{'/sysuser/page?pageStart=' + ${pagePre}+'&username='+${username1}}">«</a></span></li>
+			<li><div id="mydiv"></div></li>
+			<li><span th:if="${pageNext} lt ${count}"><a th:href="@{'/sysuser/page?pageStart=' + ${pageNext}+'&username='+${username1}}">»</a></span></li>
+			<li><span th:if="${modPage} eq '0'"><a th:href="@{'/sysuser/page?pageStart=' + ${lastPage}+'&username='+${username1}}">末页</a></span></li>
+			<li><span th:unless="${modPage} eq '0'"><a th:href="@{'/sysuser/page?pageStart=' + ${PageLast}+'&username='+${username1}}">末页</a></span></li>
+		</ul>
+	</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>单个学生信息</title>
+<script>
+
+	$(function(){
+	
+		var pcount=$('#count').val();	
+		var strhtml="";
+	
+		for(var i=1;i<=pcount/2;i++){
+		
+			strhtml+='<span> <a href=/fanye?pageStart='+2*(i-1)+'>【'+i+'】</a></span>';
+		}
+
+		$("#mydiv").html(strhtml);
+
+	})();
+</script>
+</head>
+<body>
+展示用户信息！userList.html
+
+	<table border="4" cellpadding="10" cellspacing="0">
+		   <tr >
+		   		<td>编号</td>
+		   		<td>用户名</td>
+		   		<td>密码</td>
+		   		<td>时间</td>
+		   </tr>
+		     <tr th:each="user:${Userlist}"><!--th:each  循环迭代    user：临时变量，UserList：控制层map集合的key-->
+		   		<td th:text="${user.ID}">编号</td>   <!-- th:text  作用：文本替换 -->
+		   		<td th:text="${user.username}">用户名</td>
+		   		<td th:text="${user.password}">密码</td>
+		   		<td th:text="${user.ts}">时间</td>
+		   </tr>
+		</table>
+		<div th:with="pageNext=${pageStart}+2,pagePre=${pageStart}-2,pageL=${count}-2">
+		     <table>
+		     	<tr>
+		     		<td><span><a th:href="@{'/sysuser/page?pageStart='+0}">首页</a></span> </td>
+		     		<td><span th:if="${pagePre} ge '0'"><a th:href="@{'/sysuser/page?pageStart='+${pagePre}}">【上一页】</a></span></td>
+		     		<td><div id="mydiv"></div></td>
+		     		<td><span th:if="${count} ge ${pageNext}"><a th:href="@{'/sysuser/page?pageStart='+${pageNext}}">【下一页】</a></span></td>
+		     	    <td><span><a th:href="@{'/sysuser/page?pageStart='+${pageL}}">末页</a></span></td>	
+		     	</tr>
+		     </table>
+		</div>
+</body>
+</html>
